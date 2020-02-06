@@ -101,7 +101,7 @@ df['carrier'] = np.where(df['carrier']=='', 'NA', df['carrier'])
 df['os_version'] = df['os_version'].apply(lambda x: x.split('.')[0]) 
 df['app_version'] = df['app_version'].apply(lambda x: x[0:3])
 
-# Drop model for now since it's too granular. manufactuer looks good enough for me
+# Drop model for now since it's too granular. Manufactuer looks good enough for me
 df.drop(['model'],1,inplace=True)
 
 # Group smaller buckets in locale_country_code into "Others" category
@@ -123,7 +123,7 @@ df['carrier'] = np.where(df['carrier'].isin(carrier_other), 'Others', df['carrie
 df['Q1'] = df['Q1'].astype(int)
 df['Q15'] = df['Q15'].astype(int)
 
-# reshuffle dataframes
+# reshuffle dataframe
 df = df.sample(frac=1)
 
 df_backup = df.copy(deep=True)
@@ -192,6 +192,18 @@ r2_score(y_test, y_pred)
 mean_squared_error(y_test, y_pred)  
 
 plotCoefficients(xgb, X_train)
+
+# Error plot
+plt.figure(figsize=(12, 9))
+plt.xlabel('Actual Q1 Score', fontsize=12)
+plt.ylabel('Predicted Q1 Score', fontsize=12)
+plt.grid(False, axis='x')
+plt.title("Error Plot for Regression Model", fontsize=16, y=1.00, fontweight='bold')
+plt.errorbar(y_test, y_pred, fmt='.k');
+
+#sns.regplot(y_test,y_pred);
+#sns.scatterplot(y_test, y_pred, color='#7fc97f', s=5, marker="+", alpha=0.5)
+#sns.residplot(y_test, y_pred, lowess=True, color="g", scatter_kws={"s":3})
 
 # Only plot the top 20 features (in a vertical bar chart)
 coefs = pd.DataFrame(xgb.feature_importances_, X_train.columns)
